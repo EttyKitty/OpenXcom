@@ -53,7 +53,7 @@ private:
 	std::vector<std::string> _leftTopics, _rightTopics;
 	std::vector<TTVMode> _leftFlags, _rightFlags;
 	std::unordered_set<std::string> _disabledResearch;
-	std::unordered_set<std::string> _alreadyAvailableResearch, _alreadyAvailableManufacture, _alreadyAvailableFacilities;
+	std::unordered_set<std::string> _alreadyAvailableResearch, _alreadyAvailableManufacture, _alreadyAvailableFacilities, _alreadyAvailableCrafts;
 	std::unordered_set<std::string> _protectedItems, _alreadyAvailableItems;
 	void initLists();
 	void onSelectLeftTopic(Action *action);
@@ -87,6 +87,8 @@ public:
 	bool isProtectedItem(const std::string &topic) const;
 	/// Is given protected item discovered/available for both purchase and usage/equipment?
 	bool isProtectedAndDiscoveredItem(const std::string &topic) const;
+	/// Is given craft discovered/available for both purchase and usage/equipment?
+	bool isDiscoveredCraft(const std::string &topic) const;
 };
 
 }

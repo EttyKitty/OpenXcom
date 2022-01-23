@@ -30,6 +30,7 @@
 #include "../Mod/RuleMissionScript.h"
 #include "../Mod/RuleResearch.h"
 #include "../Mod/RuleSoldierTransformation.h"
+#include "../Mod/RuleCraft.h"
 #include "../Engine/LocalizedText.h"
 #include "../Engine/Options.h"
 #include "../Engine/Unicode.h"
@@ -220,6 +221,17 @@ TechTreeViewerState::TechTreeViewerState(const RuleResearch *r, const RuleManufa
 		}
 	}
 
+	const std::vector<std::string> &allCrafts = _game->getMod()->getCraftsList();
+	RuleCraft *craftRule = 0;
+	for (std::vector<std::string>::const_iterator iter = allCrafts.begin(); iter != allCrafts.end(); ++iter)
+	{
+		craftRule = _game->getMod()->getCraft(*iter);
+		if (_game->getSavedGame()->isResearched(craftRule->getRequirements()))
+		{
+			_alreadyAvailableCrafts.insert(craftRule->getType());
+		}
+	}
+
 	_txtProgress->setAlign(ALIGN_RIGHT);
 	_txtProgress->setText(tr("STR_RESEARCH_PROGRESS").arg(discoveredSum * 100 / totalSum));
 }
@@ -368,6 +380,7 @@ void TechTreeViewerState::initLists()
 		std::vector<std::string> requiredByFacilities;
 		std::vector<std::string> requiredByItems;
 		std::vector<std::string> requiredByTransformations;
+		std::vector<std::string> requiredByCrafts;
 		std::vector<std::string> leadsTo;
 		const std::vector<const RuleResearch*> unlocks = rule->getUnlocked();
 		const std::vector<const RuleResearch*> disables = rule->getDisabled();
@@ -426,6 +439,18 @@ void TechTreeViewerState::initLists()
 				if (i == rule->getName())
 				{
 					requiredByTransformations.push_back(transf);
+				}
+			}
+		}
+
+		for (auto &craft : _game->getMod()->getCraftsList())
+		{
+			RuleCraft *temp = _game->getMod()->getCraft(craft);
+			for (auto &i : temp->getRequirements())
+			{
+				if (i == rule->getName())
+				{
+					requiredByCrafts.push_back(craft);
 				}
 			}
 		}
@@ -855,6 +880,25 @@ void TechTreeViewerState::initLists()
 				name.insert(0, "  ");
 				_lstRight->addRow(1, name.c_str());
 				_lstRight->setRowColor(row, _white);
+				_rightTopics.push_back("-");
+				_rightFlags.push_back(TTV_NONE);
+				++row;
+			}
+		}
+
+		// 6f. required by crafts
+		if (requiredByCrafts.size() > 0)
+		{
+			for (std::vector<std::string>::const_iterator i = requiredByCrafts.begin(); i != requiredByCrafts.end(); ++i)
+			{
+				std::string name = tr((*i));
+				name.insert(0, "  ");
+				name.append(tr("STR_C_FLAG"));
+				_lstRight->addRow(1, name.c_str());
+				if (!isDiscoveredCraft((*i)))
+				{
+					_lstRight->setRowColor(row, _pink);
+				}
 				_rightTopics.push_back("-");
 				_rightFlags.push_back(TTV_NONE);
 				++row;
@@ -1848,6 +1892,18 @@ bool TechTreeViewerState::isProtectedItem(const std::string &topic) const
 bool TechTreeViewerState::isProtectedAndDiscoveredItem(const std::string &topic) const
 {
 	if (_alreadyAvailableItems.find(topic) == _alreadyAvailableItems.end())
+	{
+		return false;
+	}
+	return true;
+}
+
+/**
+* Is given craft discovered/available?
+*/
+bool TechTreeViewerState::isDiscoveredCraft(const std::string &topic) const
+{
+	if (_alreadyAvailableCrafts.find(topic) == _alreadyAvailableCrafts.end())
 	{
 		return false;
 	}
