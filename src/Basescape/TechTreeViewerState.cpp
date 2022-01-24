@@ -48,7 +48,7 @@ namespace OpenXcom
 /**
  * Initializes all the elements on the UI.
  */
-TechTreeViewerState::TechTreeViewerState(const RuleResearch *r, const RuleManufacture *m, const RuleBaseFacility *f)
+TechTreeViewerState::TechTreeViewerState(const RuleResearch *r, const RuleManufacture *m, const RuleBaseFacility *f, const RuleCraft *c)
 {
 	if (r != 0)
 	{
@@ -64,6 +64,11 @@ TechTreeViewerState::TechTreeViewerState(const RuleResearch *r, const RuleManufa
 	{
 		_selectedTopic = f->getType();
 		_selectedFlag = TTV_FACILITIES;
+	}
+	else if (c != 0)
+	{
+		_selectedTopic = c->getType();
+		_selectedFlag = TTV_CRAFTS;
 	}
 
 	// Create objects
@@ -310,6 +315,10 @@ void TechTreeViewerState::initLists()
 		{
 			ss << tr("STR_I_FLAG");
 		}
+		else if (_selectedFlag == TTV_CRAFTS)
+		{
+			ss << tr("STR_C_FLAG");
+		}
 		_txtSelectedTopic->setText(tr("STR_TOPIC").arg(ss.str()));
 		_txtCostIndicator->setText("");
 	}
@@ -443,14 +452,14 @@ void TechTreeViewerState::initLists()
 			}
 		}
 
-		for (auto &craft : _game->getMod()->getCraftsList())
+		for (auto &c : _game->getMod()->getCraftsList())
 		{
-			RuleCraft *temp = _game->getMod()->getCraft(craft);
+			RuleCraft *temp = _game->getMod()->getCraft(c);
 			for (auto &i : temp->getRequirements())
 			{
 				if (i == rule->getName())
 				{
-					requiredByCrafts.push_back(craft);
+					requiredByCrafts.push_back(c);
 				}
 			}
 		}
@@ -899,8 +908,8 @@ void TechTreeViewerState::initLists()
 				{
 					_lstRight->setRowColor(row, _pink);
 				}
-				_rightTopics.push_back("-");
-				_rightFlags.push_back(TTV_NONE);
+				_rightTopics.push_back((*i));
+				_rightFlags.push_back(TTV_CRAFTS);
 				++row;
 			}
 		}
@@ -1741,6 +1750,114 @@ void TechTreeViewerState::initLists()
 			txt << Unicode::formatFunding(rule->getBuyCost());
 			_lstFull->addRow(1, txt.str().c_str());
 			_lstFull->setRowColor(row, _white);
+			_leftTopics.push_back("-");
+			_leftFlags.push_back(TTV_NONE);
+			++row;
+		}
+	}
+	else if (_selectedFlag == TTV_CRAFTS)
+	{
+		int row = 0;
+		RuleCraft *rule = _game->getMod()->getCraft(_selectedTopic);
+		if (rule == 0)
+			return;
+
+		// 1. requires
+		const std::vector<std::string> reqs = rule->getRequirements();
+		if (reqs.size() > 0)
+		{
+			_lstLeft->addRow(1, tr("STR_RESEARCH_REQUIRED").c_str());
+			_lstLeft->setRowColor(row, _blue);
+			_leftTopics.push_back("-");
+			_leftFlags.push_back(TTV_NONE);
+			++row;
+			for (std::vector<std::string>::const_iterator i = reqs.begin(); i != reqs.end(); ++i)
+			{
+				std::string name = tr((*i));
+				name.insert(0, "  ");
+				_lstLeft->addRow(1, name.c_str());
+				_lstLeft->setRowColor(row, getResearchColor((*i)));
+				_leftTopics.push_back((*i));
+				_leftFlags.push_back(TTV_RESEARCH);
+				++row;
+			}
+		}
+
+		// 2. services (from base facilities) required to buy
+		if (rule->getRequiresBuyBaseFunc().any())
+		{
+			const std::vector<std::string> servicesBuy = _game->getMod()->getBaseFunctionNames(rule->getRequiresBuyBaseFunc());
+			_lstLeft->addRow(1, tr("STR_SERVICES_REQUIRED_BUY").c_str());
+			_lstLeft->setRowColor(row, _blue);
+			_leftTopics.push_back("-");
+			_leftFlags.push_back(TTV_NONE);
+			++row;
+			for (auto& i : servicesBuy)
+			{
+				std::string name = tr(i);
+				name.insert(0, "  ");
+				_lstLeft->addRow(1, name.c_str());
+				_lstLeft->setRowColor(row, _gold);
+				_leftTopics.push_back("-");
+				_leftFlags.push_back(TTV_NONE);
+				++row;
+			}
+		}
+
+		// 3. produced by
+		std::vector<std::string> producedBy;
+		for (auto& j : _game->getMod()->getManufactureList())
+		{
+			RuleManufacture* temp = _game->getMod()->getManufacture(j);
+			if (temp->getProducedCraft() == rule)
+			{
+				producedBy.push_back(j);
+				break;
+			}
+		}
+		if (producedBy.size() > 0)
+		{
+			_lstLeft->addRow(1, tr("STR_PRODUCED_BY").c_str());
+			_lstLeft->setRowColor(row, _blue);
+			_leftTopics.push_back("-");
+			_leftFlags.push_back(TTV_NONE);
+			++row;
+			for (std::vector<std::string>::const_iterator i = producedBy.begin(); i != producedBy.end(); ++i)
+			{
+				std::string name = tr((*i));
+				name.insert(0, "  ");
+				name.append(tr("STR_M_FLAG"));
+				_lstLeft->addRow(1, name.c_str());
+				if (!isDiscoveredManufacture((*i)))
+				{
+					_lstLeft->setRowColor(row, _pink);
+				}
+				_leftTopics.push_back((*i));
+				_leftFlags.push_back(TTV_MANUFACTURING);
+				++row;
+			}
+		}
+
+		// empty line
+		_lstLeft->addRow(1, "");
+		_leftTopics.push_back("-");
+		_leftFlags.push_back(TTV_NONE);
+		++row;
+
+		// cost to buy
+		if (rule->getBuyCost() > 0)
+		{
+			_lstLeft->addRow(1, tr("STR_TTV_COST_PER_UNIT").c_str());
+			_lstLeft->setRowColor(row, _blue);
+			_leftTopics.push_back("-");
+			_leftFlags.push_back(TTV_NONE);
+			++row;
+
+			std::ostringstream txt;
+			txt << "  ";
+			txt << Unicode::formatFunding(rule->getBuyCost());
+			_lstLeft->addRow(1, txt.str().c_str());
+			_lstLeft->setRowColor(row, _white);
 			_leftTopics.push_back("-");
 			_leftFlags.push_back(TTV_NONE);
 			++row;

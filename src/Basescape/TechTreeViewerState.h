@@ -33,8 +33,9 @@ class TextList;
 class RuleResearch;
 class RuleManufacture;
 class RuleBaseFacility;
+class RuleCraft;
 
-enum TTVMode { TTV_NONE, TTV_RESEARCH, TTV_MANUFACTURING, TTV_FACILITIES, TTV_ITEMS };
+enum TTVMode { TTV_NONE, TTV_RESEARCH, TTV_MANUFACTURING, TTV_FACILITIES, TTV_ITEMS, TTV_CRAFTS };
 
 /**
  * TechTreeViewer screen, where you can browse the Tech Tree.
@@ -61,7 +62,7 @@ private:
 	void onSelectFullTopic(Action *action);
 public:
 	/// Creates the Tech Tree Viewer state.
-	TechTreeViewerState(const RuleResearch *r = 0, const RuleManufacture *m = 0, const RuleBaseFacility *f = 0);
+	TechTreeViewerState(const RuleResearch *r = 0, const RuleManufacture *m = 0, const RuleBaseFacility *f = 0, const RuleCraft *c = 0);
 	/// Cleans up the Tech Tree Viewer state.
 	~TechTreeViewerState();
 	/// Initializes the state.
