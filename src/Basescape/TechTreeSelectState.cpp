@@ -365,7 +365,7 @@ void TechTreeSelectState::initLists()
 		ss << tr((*i));
 		ss << tr("STR_C_FLAG");
 		_lstTopics->addRow(1, ss.str().c_str());
-		if (!_parent->isDiscoveredFacility(*i))
+		if (!_parent->isDiscoveredCraft(*i))
 		{
 			_lstTopics->setRowColor(row, _lstTopics->getSecondaryColor());
 		}

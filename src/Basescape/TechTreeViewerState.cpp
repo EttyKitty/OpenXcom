@@ -793,7 +793,7 @@ void TechTreeViewerState::initLists()
 		}
 
 		// 6. required by
-		if (requiredByResearch.size() > 0 || requiredByManufacture.size() > 0 || requiredByFacilities.size() > 0 || requiredByItems.size() > 0)
+		if (requiredByResearch.size() > 0 || requiredByManufacture.size() > 0 || requiredByFacilities.size() > 0 || requiredByItems.size() > 0 || requiredByCrafts.size() > 0)
 		{
 			_lstRight->addRow(1, tr("STR_REQUIRED_BY").c_str());
 			_lstRight->setRowColor(row, _blue);
@@ -874,7 +874,26 @@ void TechTreeViewerState::initLists()
 			}
 		}
 
-		// 6e. required by transformations
+		// 6e. required by crafts
+		if (requiredByCrafts.size() > 0)
+		{
+			for (std::vector<std::string>::const_iterator i = requiredByCrafts.begin(); i != requiredByCrafts.end(); ++i)
+			{
+				std::string name = tr((*i));
+				name.insert(0, "  ");
+				name.append(tr("STR_C_FLAG"));
+				_lstRight->addRow(1, name.c_str());
+				if (!isDiscoveredCraft((*i)))
+				{
+					_lstRight->setRowColor(row, _pink);
+				}
+				_rightTopics.push_back((*i));
+				_rightFlags.push_back(TTV_CRAFTS);
+				++row;
+			}
+		}
+
+		// 6f. required by transformations
 		if (requiredByTransformations.size() > 0)
 		{
 			_lstRight->addRow(1, tr("STR_REQUIRED_BY_TRANSFORMATIONS").c_str());
@@ -891,25 +910,6 @@ void TechTreeViewerState::initLists()
 				_lstRight->setRowColor(row, _white);
 				_rightTopics.push_back("-");
 				_rightFlags.push_back(TTV_NONE);
-				++row;
-			}
-		}
-
-		// 6f. required by crafts
-		if (requiredByCrafts.size() > 0)
-		{
-			for (std::vector<std::string>::const_iterator i = requiredByCrafts.begin(); i != requiredByCrafts.end(); ++i)
-			{
-				std::string name = tr((*i));
-				name.insert(0, "  ");
-				name.append(tr("STR_C_FLAG"));
-				_lstRight->addRow(1, name.c_str());
-				if (!isDiscoveredCraft((*i)))
-				{
-					_lstRight->setRowColor(row, _pink);
-				}
-				_rightTopics.push_back((*i));
-				_rightFlags.push_back(TTV_CRAFTS);
 				++row;
 			}
 		}
