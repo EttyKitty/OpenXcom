@@ -73,6 +73,7 @@ es-419:
   STR_M_FLAG: "[m]"
   STR_F_FLAG: "[f]"
   STR_I_FLAG: "[i]"
+  STR_C_FLAG: "[c]"
   STR_TECH_TREE_VIEWER: "Visor de arbol de tecnologías"
   STR_SELECT_TOPIC: "Seleccionar tema"
   STR_RESEARCH_PROGRESS: "Progreso>{ALT} {0}%"

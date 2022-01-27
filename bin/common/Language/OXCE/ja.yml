@@ -105,6 +105,7 @@ ja:
   STR_M_FLAG: " [m]"
   STR_F_FLAG: " [f]"
   STR_I_FLAG: " [i]"
+  STR_C_FLAG: " [c]"
   STR_THIS_FEATURE_IS_DISABLED_1: "この機能は無効"
   STR_THIS_FEATURE_IS_DISABLED_2: "この機能は無効"
   STR_THIS_FEATURE_IS_DISABLED_3: "この機能は無効"

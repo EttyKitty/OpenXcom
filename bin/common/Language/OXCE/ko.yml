@@ -107,6 +107,7 @@ ko:
   STR_M_FLAG: "[m]"
   STR_F_FLAG: "[f]"
   STR_I_FLAG: "[i]"
+  STR_C_FLAG: "[c]"
   STR_THIS_FEATURE_IS_DISABLED_1: "이 기능은 금지되어 있습니다."
   STR_THIS_FEATURE_IS_DISABLED_2: "이 기능은 금지되어 있습니다."
   STR_THIS_FEATURE_IS_DISABLED_3: "이 기능은 금지되어 있습니다."

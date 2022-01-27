@@ -86,6 +86,7 @@ hu:
   STR_M_FLAG: "[m]"
   STR_F_FLAG: "[f]"
   STR_I_FLAG: "[i]"
+  STR_C_FLAG: "[c]"
   STR_TECH_TREE_VIEWER: "Tech Fa Áttekintés"
   STR_SELECT_TOPIC: "Válassz Témát"
   STR_RESEARCH_PROGRESS: "Státusz>{ALT}{0}%"

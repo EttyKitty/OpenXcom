@@ -40,6 +40,7 @@ et:
   STR_M_FLAG: " [m]"
   STR_F_FLAG: " [f]"
   STR_I_FLAG: " [i]"
+  STR_C_FLAG: " [c]"
   STR_TECH_TREE_VIEWER: "Tehnopuu vaatleja"
   STR_SELECT_TOPIC: "Vali teema"
   STR_NOT_ENOUGH_MORALE: "Liiga väike moraal!"

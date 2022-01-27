@@ -104,6 +104,7 @@ fi:
   STR_M_FLAG: " [tuotanto]"
   STR_F_FLAG: " [laitos]"
   STR_I_FLAG: " [esine]"
+  STR_C_FLAG: " [alus]"
   STR_THIS_FEATURE_IS_DISABLED_1: "Tämä ominaisuus on pois käytöstä."
   STR_THIS_FEATURE_IS_DISABLED_2: "Tämä ominaisuus on pois käytöstä."
   STR_THIS_FEATURE_IS_DISABLED_3: "Tämä ominaisuus on pois käytöstä."

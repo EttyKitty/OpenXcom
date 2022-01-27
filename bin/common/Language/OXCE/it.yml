@@ -88,6 +88,7 @@ it:
   STR_M_FLAG: " [m]"
   STR_F_FLAG: " [f]"
   STR_I_FLAG: " [i]"
+  STR_C_FLAG: " [c]"
   STR_TECH_TREE_VIEWER: "Visione Tech Tree"
   STR_SELECT_TOPIC: "Seleziona Argomento"
   STR_RESEARCH_PROGRESS: "Progresso>{ALT} {0}%"
